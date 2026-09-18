@@ -2,7 +2,7 @@
 
 **Live site:** https://hk-usermanagement.vercel.app/
 
-Manage users through a simple UI. Create, edit and delete users, each with an optional profile picture, backed by AWS Lambda, API Gateway, DynamoDB and S3.
+Manage users through a simple UI. Create, edit and delete users, each with an optional profile picture, using AWS Lambda, API Gateway, DynamoDB and S3.
 
 ## Screenshots
 
