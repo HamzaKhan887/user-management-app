@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,40 +19,39 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import useUser from '@/hooks/useUser'
 import useUpdateUser from '@/hooks/useUpdateUser'
-import { CreateAndEditUser, userFormSchema } from '@/utils/types'
+import { UserFormValues, userFormSchema, User } from '@/utils/types'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
 import { Spinner } from '@/components/ui/spinner'
 
-function EditUserButton({ userId }: { userId: string }) {
+function EditUserButton({ user }: { user: User }) {
   const [open, setOpen] = useState<boolean>(false)
-  const { data } = useUser(userId)
 
-  const form = useForm<CreateAndEditUser>({
+  const form = useForm<UserFormValues>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
       name: '',
       email: '',
+      imageData: undefined,
     },
   })
 
   useEffect(() => {
-    if (data) {
+    if (user) {
       form.reset({
-        name: data.name,
-        email: data.email,
+        name: user.name,
+        email: user.email,
+        imageData: undefined,
       })
     }
-  }, [data, form])
+  }, [user, form])
 
   const { mutateAsync, isPending } = useUpdateUser()
 
-  async function onSubmit(data: CreateAndEditUser) {
-    await mutateAsync({ userId, user: data })
+  async function onSubmit(data: UserFormValues) {
+    await mutateAsync({ userId: user.id, user: data })
     form.reset()
     setOpen(false)
   }
@@ -100,6 +100,42 @@ function EditUserButton({ userId }: { userId: string }) {
                     aria-invalid={fieldState.invalid}
                     placeholder='Enter an email'
                     autoComplete='off'
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name='imageData'
+              control={form.control}
+              render={({ field: { onChange, onBlur, name }, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor='image-1'>
+                    Profile Picture (optional: leave blank to keep current)
+                  </FieldLabel>
+                  <Input
+                    type='file'
+                    accept='image/jpeg,image/png,image/gif'
+                    id='image-1'
+                    key={user.id}
+                    name={name}
+                    onBlur={onBlur}
+                    aria-invalid={fieldState.invalid}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) {
+                        onChange(undefined)
+                        return
+                      }
+
+                      const reader = new FileReader()
+                      reader.onload = () => {
+                        onChange(reader.result as string)
+                      }
+                      reader.readAsDataURL(file)
+                    }}
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />

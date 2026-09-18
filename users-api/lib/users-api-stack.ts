@@ -6,13 +6,15 @@ import path from 'path'
 import * as apigateway from 'aws-cdk-lib/aws-apigatewayv2'
 import * as apigateway_integrations from 'aws-cdk-lib/aws-apigatewayv2-integrations'
 import { DynamodbStack } from './dynamodb-stack'
+import { S3BucketStack } from './s3-bucket-stack'
 
-interface usersApiStackProps extends cdk.StackProps {
+interface UsersApiStackProps extends cdk.StackProps {
   dynamodbStack: DynamodbStack
+  s3BucketStack: S3BucketStack
 }
 
 export class UsersApiStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props: usersApiStackProps) {
+  constructor(scope: Construct, id: string, props: UsersApiStackProps) {
     super(scope, id, props)
     const userLambda = new NodejsFunction(this, 'UserHandler', {
       runtime: Runtime.NODEJS_24_X,
@@ -21,10 +23,12 @@ export class UsersApiStack extends cdk.Stack {
       functionName: `${this.stackName}-user-handler`,
       environment: {
         TABLE_NAME: props?.dynamodbStack.usersTable.tableName,
+        BUCKET_NAME: props?.s3BucketStack.profilePicturesBucket.bucketName,
       },
     })
 
     props.dynamodbStack.usersTable.grantReadWriteData(userLambda)
+    props.s3BucketStack.profilePicturesBucket.grantReadWrite(userLambda)
 
     const httpApi = new apigateway.HttpApi(this, 'usersApi', {
       apiName: 'users-api',

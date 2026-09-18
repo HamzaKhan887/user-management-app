@@ -1,11 +1,20 @@
 import DeleteUserButton from '@/components/DeleteUserButton'
 import { TableCell, TableRow } from '@/components/ui/table'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { User } from '@/utils/types'
 import EditUserButton from '@/components/EditUserButton'
 
-function SingleUser({ id, name, email, createdAt }: User) {
+function SingleUser({ id, name, email, createdAt, imageUrl }: User) {
   return (
     <TableRow>
+      <TableCell>
+        <div className='flex justify-center'>
+          <Avatar>
+            <AvatarImage src={imageUrl} alt={name} />
+            <AvatarFallback>{name.charAt(0)}</AvatarFallback>
+          </Avatar>
+        </div>
+      </TableCell>
       <TableCell className='font-medium'>{name}</TableCell>
       <TableCell>{email}</TableCell>
       <TableCell>
@@ -20,7 +29,7 @@ function SingleUser({ id, name, email, createdAt }: User) {
         <span className='text-muted-foreground text-xs'>(UTC)</span>
       </TableCell>
       <TableCell className='text-right'>
-        <EditUserButton userId={id} />
+        <EditUserButton user={{ id, name, email, createdAt, imageUrl }} />
       </TableCell>
       <TableCell className='text-right'>
         <DeleteUserButton userId={id} />

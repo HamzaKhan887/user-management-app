@@ -20,24 +20,33 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { CreateAndEditUser, userFormSchema } from '@/utils/types'
+import { UserFormValues, userFormSchema } from '@/utils/types'
 import useCreateUser from '@/hooks/useCreateUser'
 import { Spinner } from './ui/spinner'
+import { useState } from 'react'
 
 function CreateUserForm() {
-  const form = useForm<CreateAndEditUser>({
+  const [fileInputKey, setFileInputKey] = useState(0)
+
+  const form = useForm<UserFormValues>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
       name: '',
       email: '',
+      imageData: '',
     },
   })
 
   const { mutateAsync, isPending } = useCreateUser()
 
-  async function onSubmit(data: CreateAndEditUser) {
-    await mutateAsync(data)
+  function resetForm() {
     form.reset()
+    setFileInputKey((k) => k + 1)
+  }
+
+  async function onSubmit(data: UserFormValues) {
+    await mutateAsync(data)
+    resetForm()
   }
 
   return (
@@ -54,7 +63,9 @@ function CreateUserForm() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor='name'>Name</FieldLabel>
+                  <FieldLabel htmlFor='name'>
+                    Name <span className='text-muted-foreground -ml-1'>*</span>
+                  </FieldLabel>
                   <Input
                     {...field}
                     id='name'
@@ -73,7 +84,10 @@ function CreateUserForm() {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor='email'>Email</FieldLabel>
+                  <FieldLabel htmlFor='email'>
+                    Email
+                    <span className='text-muted-foreground -ml-1'>*</span>
+                  </FieldLabel>
                   <Input
                     {...field}
                     id='email'
@@ -87,12 +101,50 @@ function CreateUserForm() {
                 </Field>
               )}
             />
+            <Controller
+              name='imageData'
+              control={form.control}
+              render={({
+                field: { onChange, onBlur, name, ref },
+                fieldState,
+              }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor='image'>Profile Picture</FieldLabel>
+                  <Input
+                    type='file'
+                    accept='image/jpeg,image/png,image/gif'
+                    id='image'
+                    key={fileInputKey}
+                    name={name}
+                    ref={ref}
+                    onBlur={onBlur}
+                    aria-invalid={fieldState.invalid}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) {
+                        onChange('')
+                        return
+                      }
+
+                      const reader = new FileReader()
+                      reader.onload = () => {
+                        onChange(reader.result as string)
+                      }
+                      reader.readAsDataURL(file)
+                    }}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
           </FieldGroup>
         </form>
       </CardContent>
       <CardFooter>
         <Field orientation='horizontal'>
-          <Button type='button' variant='outline' onClick={() => form.reset()}>
+          <Button type='button' variant='outline' onClick={resetForm}>
             Reset
           </Button>
 

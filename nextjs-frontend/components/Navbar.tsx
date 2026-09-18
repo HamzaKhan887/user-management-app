@@ -8,7 +8,7 @@ function Navbar() {
           User Management App
         </span>
         <span className='text-xs text-muted-foreground'>
-          Using AWS Lambda, API Gateway and DynamoDB
+          Using AWS Lambda, API Gateway, DynamoDB and S3
         </span>
       </div>
       <ToggleTheme />

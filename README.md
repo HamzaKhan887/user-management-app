@@ -1,21 +1,22 @@
 # User Management App
+
 **Live site:** https://hk-usermanagement.vercel.app/
 
-Manage users through a simple UI. Create, edit and delete users, with a backend using AWS Lambda, API Gateway and DynamoDB.
+Manage users through a simple UI. Create, edit and delete users, each with an optional profile picture, backed by AWS Lambda, API Gateway, DynamoDB and S3.
 
 ## Screenshots
 
 **Main page:** create a new user and browse the full list, sorted newest first.
 
-![Main page](./nextjs-frontend/assets/main-page.png)
+![Main page](./assets/main-page.png)
 
-**Edit user:** update a user's name and email from a pre-filled dialog.
+**Edit user:** update a user's details or replace their profile picture from a pre-filled dialog.
 
-![Edit user](./nextjs-frontend/assets/edit-user.png)
+![Edit user](./assets/edit-user.png)
 
 **Delete user:** confirm before removing a user from the table.
 
-![Delete user](./nextjs-frontend/assets/delete-user.png)
+![Delete user](./assets/delete-user.png)
 
 ## Built with
 
@@ -28,11 +29,11 @@ Manage users through a simple UI. Create, edit and delete users, with a backend 
 - [Zod](https://zod.dev/): schema validation
 - [Tailwind CSS](https://tailwindcss.com/): styling
 - [shadcn/ui](https://ui.shadcn.com/): UI components
-- [next-themes](https://github.com/pacocoursey/next-themes): light/dark mode
 
 **Backend**
 - [AWS CDK](https://aws.amazon.com/cdk/): infrastructure as code
 - [AWS Lambda](https://aws.amazon.com/lambda/): backend functions
 - [Amazon API Gateway](https://aws.amazon.com/api-gateway/): HTTP routing
 - [Amazon DynamoDB](https://aws.amazon.com/dynamodb/): database
-- [AWS SDK for JavaScript v3](https://github.com/aws/aws-sdk-js-v3): DynamoDB client
+- [Amazon S3](https://aws.amazon.com/s3/): profile picture storage
+- [AWS SDK for JavaScript v3](https://github.com/aws/aws-sdk-js-v3): DynamoDB and S3 clients

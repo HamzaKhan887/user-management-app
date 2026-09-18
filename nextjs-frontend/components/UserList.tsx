@@ -26,7 +26,7 @@ function UserList() {
   )
 
   return (
-    <Card className='w-full max-w-4xl'>
+    <Card className='w-full max-w-5xl'>
       <CardHeader>
         <CardTitle>Users List</CardTitle>
         <CardDescription>
@@ -47,7 +47,8 @@ function UserList() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className='w-[100px]'>Name</TableHead>
+                <TableHead className='w-[100px]'>Profile Picture</TableHead>
+                <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Created At</TableHead>
                 <TableHead className='text-right'>Edit User</TableHead>
