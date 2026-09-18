@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+
+# CDK synthesized output
+cdk.out
+
+# Compiled output (if noEmit is off, or from other tools)
+*.js
+*.d.ts
+!jest.config.js
+
+# Test coverage
+coverage
+
+# Build artifacts
+dist
+build
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Package manager lockfiles (prettier can mangle these)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
