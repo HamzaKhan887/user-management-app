@@ -30,7 +30,7 @@ export class UsersApiStack extends cdk.Stack {
       apiName: 'users-api',
       description: 'Users Management API',
       corsPreflight: {
-        allowOrigins: ['*'],
+        allowOrigins: ['https://hk-usermanagement.vercel.app'],
         allowMethods: [apigateway.CorsHttpMethod.ANY],
         allowHeaders: ['*'],
       },
@@ -74,6 +74,13 @@ export class UsersApiStack extends cdk.Stack {
         ),
       })
     })
+
+    const defaultStage = httpApi.defaultStage!.node
+      .defaultChild as apigateway.CfnStage
+    defaultStage.defaultRouteSettings = {
+      throttlingRateLimit: 10,
+      throttlingBurstLimit: 20,
+    }
 
     new cdk.CfnOutput(this, 'api url', {
       value: httpApi.url ?? '',
